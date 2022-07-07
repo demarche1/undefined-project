@@ -1,0 +1,20 @@
+{
+  "name": "gatry",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --watchAll --verbose",
+    "test:unit": "npm test -- --watch -c jest-unit-config.js",
+    "test:cov": "jest --coverage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^28.1.2"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1"
+  }
+}
