@@ -1,12 +1,17 @@
 const MongoHelper = require("../../helpers/mongo-helper");
-const { MONGO_URI } = require("../../config/env");
+const { mongoUri } = require("../../../globalConfig.json");
 const UserRepository = require("../user-repository");
 const { MissingParamError } = require("../../helpers/errors");
-describe.only("UserRepository.findByEmail", () => {
+
+describe("UserRepository.findByEmail", () => {
   let usersCollection;
   beforeAll(async () => {
-    await MongoHelper.connect(MONGO_URI);
+    await MongoHelper.connect(mongoUri);
     usersCollection = await MongoHelper.getCollection("users");
+  });
+
+  beforeEach(async () => {
+    await usersCollection.deleteMany();
   });
 
   afterAll(async () => {
@@ -29,9 +34,7 @@ describe.only("UserRepository.findByEmail", () => {
       state: "any_state",
       password: "hashed_password",
     });
-    console.log("fakeUser", fakeUser);
     const user = await repository.findByEmail("valid_email@mail.com");
-    console.log("user", user);
     expect(user._id.toHexString()).toBe(fakeUser.insertedId.toHexString());
   });
 });
