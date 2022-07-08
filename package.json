@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node ./src/index.js",
     "test": "jest --watchAll --verbose",
     "test:unit": "npm test -- --watch -c jest-unit-config.js",
     "test:cov": "jest --coverage"
@@ -12,10 +13,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@shelf/jest-mongodb": "^3.0.2",
     "jest": "^28.1.2"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
-    "jsonwebtoken": "^8.5.1"
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^4.7.0"
   }
 }
