@@ -1,4 +1,5 @@
 const HttpResponse = require("../helpers/httpResponse");
+const { MissingParamError, InvalidParamError } = require("../helpers/errors");
 
 module.exports = class CreateUserRouter {
   constructor(createUserService) {
@@ -10,40 +11,52 @@ module.exports = class CreateUserRouter {
         httpResquest.body;
 
       if (!name) {
-        return HttpResponse.BadRequest("name");
+        return HttpResponse.BadRequest(new MissingParamError("name"));
       }
 
       if (!age) {
-        return HttpResponse.BadRequest("age");
+        return HttpResponse.BadRequest(new MissingParamError("age"));
       }
 
       if (!email) {
-        return HttpResponse.BadRequest("email");
+        return HttpResponse.BadRequest(new MissingParamError("email"));
       }
 
       if (!password) {
-        return HttpResponse.BadRequest("password");
+        return HttpResponse.BadRequest(new MissingParamError("password"));
       }
 
       if (!confirmPassword) {
-        return HttpResponse.BadRequest("confirmPassword");
+        return HttpResponse.BadRequest(
+          new MissingParamError("confirmPassword")
+        );
       }
 
       if (!city) {
-        return HttpResponse.BadRequest("city");
+        return HttpResponse.BadRequest(new MissingParamError("city"));
       }
 
       if (!zip_code) {
-        return HttpResponse.BadRequest("zip_code");
+        return HttpResponse.BadRequest(new MissingParamError("zip_code"));
       }
 
-      const accessToken = await this.authService.auth({ email, password });
-
-      if (!accessToken) {
-        return HttpResponse.Unauthorized();
+      if (password !== confirmPassword) {
+        return HttpResponse.BadRequest(
+          new InvalidParamError("confirmPassword")
+        );
       }
 
-      return HttpResponse.Ok({ accessToken });
+      const user = await this.createUserService.create({
+        name,
+        age,
+        email,
+        password,
+        confirmPassword,
+        city,
+        zip_code,
+      });
+
+      return HttpResponse.Ok({ user });
     } catch (error) {
       return HttpResponse.InternalServerError();
     }
