@@ -46,7 +46,7 @@ module.exports = class CreateUserRouter {
         );
       }
 
-      const user = await this.createUserService.create({
+      const userId = await this.createUserService.create({
         name,
         age,
         email,
@@ -56,7 +56,7 @@ module.exports = class CreateUserRouter {
         zip_code,
       });
 
-      return HttpResponse.Ok({ user });
+      return HttpResponse.Ok({ userId });
     } catch (error) {
       return HttpResponse.InternalServerError();
     }

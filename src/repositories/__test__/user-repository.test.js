@@ -6,6 +6,7 @@ const UserModel = require("../../models/user-model");
 
 describe("UserRepository.findByEmail", () => {
   let usersCollection;
+
   beforeAll(async () => {
     await MongoHelper.connect(mongoUri);
     usersCollection = await MongoHelper.getCollection("users");
