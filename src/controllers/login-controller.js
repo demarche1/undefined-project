@@ -1,11 +1,11 @@
 const HttpResponse = require("../helpers/httpResponse");
 const { MissingParamError } = require("../helpers/errors");
 
-module.exports = class LoginRouter {
+module.exports = class LoginController {
   constructor(authService) {
     this.authService = authService;
   }
-  async route(httpResquest) {
+  async login(httpResquest) {
     try {
       const { email, password } = httpResquest.body;
 

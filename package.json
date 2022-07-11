@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./src/index.js",
-    "test": "jest --watchAll --verbose",
+    "test": "jest --verbose --watchAll",
     "test:unit": "npm test -- --watch -c jest-unit-config.js",
     "test:cov": "jest --coverage"
   },

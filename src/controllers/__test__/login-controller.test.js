@@ -1,4 +1,4 @@
-const LoginRouter = require("../login-router");
+const LoginRouter = require("../login-controller");
 
 const {
   MissingParamError,
@@ -6,11 +6,11 @@ const {
   UnauthorizedError,
 } = require("../../helpers/errors");
 
-describe("LoginRouter", () => {
+describe("LoginController", () => {
   test("should return 500 if no httpResquest", async () => {
     const loginRouter = new LoginRouter({});
     const httpResquest = null;
-    const response = await loginRouter.route(httpResquest);
+    const response = await loginRouter.login(httpResquest);
     expect(response.status).toBe(500);
     expect(response.body).toEqual(new ServerError());
   });
@@ -18,7 +18,7 @@ describe("LoginRouter", () => {
   test("should return 500 if no httpResquest body", async () => {
     const loginRouter = new LoginRouter();
     const httpResquest = null;
-    const response = await loginRouter.route(httpResquest);
+    const response = await loginRouter.login(httpResquest);
     expect(response.status).toBe(500);
     expect(response.body).toEqual(new ServerError());
   });
@@ -30,7 +30,7 @@ describe("LoginRouter", () => {
         password: "any_password",
       },
     };
-    const response = await loginRouter.route(httpResquest);
+    const response = await loginRouter.login(httpResquest);
     expect(response.status).toBe(400);
     expect(response.body).toEqual(new MissingParamError("email"));
   });
@@ -42,7 +42,7 @@ describe("LoginRouter", () => {
         email: "any_email@email.com",
       },
     };
-    const response = await loginRouter.route(httpResquest);
+    const response = await loginRouter.login(httpResquest);
     expect(response.status).toBe(400);
     expect(response.body).toEqual(new MissingParamError("password"));
   });
@@ -61,7 +61,7 @@ describe("LoginRouter", () => {
         password: "any_password",
       },
     };
-    const response = await loginRouter.route(httpResquest);
+    const response = await loginRouter.login(httpResquest);
     expect(response.status).toBe(401);
     expect(response.body).toEqual(new UnauthorizedError());
   });
@@ -80,7 +80,7 @@ describe("LoginRouter", () => {
         password: "any_password",
       },
     };
-    const response = await loginRouter.route(httpResquest);
+    const response = await loginRouter.login(httpResquest);
     expect(response.status).toBe(200);
     expect(response.body.accessToken).toEqual("any_token");
   });
@@ -93,7 +93,7 @@ describe("LoginRouter", () => {
         password: "any_password",
       },
     };
-    const response = await loginRouter.route(httpResquest);
+    const response = await loginRouter.login(httpResquest);
     expect(response.status).toBe(500);
     expect(response.body).toEqual(new ServerError());
   });
@@ -108,7 +108,7 @@ describe("LoginRouter", () => {
         password: "any_password",
       },
     };
-    const response = await loginRouter.route(httpResquest);
+    const response = await loginRouter.login(httpResquest);
     expect(response.status).toBe(500);
     expect(response.body).toEqual(new ServerError());
   });

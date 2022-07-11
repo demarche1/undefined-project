@@ -1,11 +1,11 @@
 const HttpResponse = require("../helpers/httpResponse");
 const { MissingParamError, InvalidParamError } = require("../helpers/errors");
 
-module.exports = class CreateUserRouter {
-  constructor(createUserService) {
-    this.createUserService = createUserService;
+module.exports = class UserController {
+  constructor(userService) {
+    this.userService = userService;
   }
-  async route(httpResquest) {
+  async create(httpResquest) {
     try {
       const { name, age, email, password, confirmPassword, city, zip_code } =
         httpResquest.body;
@@ -46,7 +46,7 @@ module.exports = class CreateUserRouter {
         );
       }
 
-      const userId = await this.createUserService.create({
+      const userId = await this.userService.create({
         name,
         age,
         email,
@@ -60,5 +60,15 @@ module.exports = class CreateUserRouter {
     } catch (error) {
       return HttpResponse.InternalServerError();
     }
+  }
+
+  async show(httpResquest) {
+    try {
+    } catch (error) {}
+  }
+
+  async update(httpResquest) {
+    try {
+    } catch (error) {}
   }
 };
