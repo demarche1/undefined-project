@@ -10,7 +10,7 @@ describe("UserRepository.findByEmail", () => {
   beforeAll(async () => {
     await MongoHelper.connect(mongoUri);
     usersCollection = await MongoHelper.getCollection("users");
-  });
+  }, 7000);
 
   beforeEach(async () => {
     await usersCollection.deleteMany();

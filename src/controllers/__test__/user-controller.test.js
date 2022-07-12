@@ -102,4 +102,10 @@ describe("UserController", () => {
     expect(result.body).toEqual(new ServerError());
     expect(result.status).toBe(500);
   });
+
+  test("should return 200 if user is created", async () => {
+    const { httpResquest, userController } = makeSut();
+    const result = await userController.create(httpResquest);
+    expect(result.status).toBe(200);
+  });
 });
