@@ -37,9 +37,6 @@ module.exports = class UserRepository {
       { projection: { email: 1, password: 1, age: 1, city: 1, zip_code: 1 } }
     );
 
-    console.log("userFromDb", userFromDb);
-    console.log("id", _id);
-
     if (!userFromDb) {
       return null;
     }

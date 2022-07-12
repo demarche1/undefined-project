@@ -3,7 +3,7 @@ const UserService = require("../user-service");
 
 function makeSut() {
   const userRepository = {
-    create: jest.fn(),
+    createUser: jest.fn(),
   };
 
   const encryptor = {
@@ -89,7 +89,7 @@ describe("UserService", () => {
   test("should ensure userRepository was called with correct param", async () => {
     const { userService, fakeUser, userRepository, encryptor } = makeSut();
     encryptor.hash.mockReturnValueOnce("hashed_password");
-    const repositorySpy = jest.spyOn(userRepository, "create");
+    const repositorySpy = jest.spyOn(userRepository, "createUser");
     await userService.create(fakeUser);
 
     expect(repositorySpy).toHaveBeenCalledWith({
@@ -104,14 +104,14 @@ describe("UserService", () => {
 
   test("should return null if can`t create user", async () => {
     const { userService, fakeUser, userRepository } = makeSut();
-    userRepository.create.mockReturnValueOnce(null);
+    userRepository.createUser.mockReturnValueOnce(null);
     const result = await userService.create(fakeUser);
     expect(result).toBe(null);
   });
 
   test("should return true if user true if user created", async () => {
     const { userService, fakeUser, userRepository } = makeSut();
-    userRepository.create.mockReturnValueOnce("any_id");
+    userRepository.createUser.mockReturnValueOnce("any_id");
     const result = await userService.create(fakeUser);
     expect(result).toBeTruthy();
   });
