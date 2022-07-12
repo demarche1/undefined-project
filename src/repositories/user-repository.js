@@ -59,11 +59,15 @@ module.exports = class UserRepository {
 
   async updateUserInfo(user) {
     const usersCollection = await MongoHelper.getCollection("users");
-    const result = await usersCollection.findOneAndUpdate(
+    const updatedUser = await usersCollection.findOneAndUpdate(
       { name: user.name },
       { $set: user }
     );
 
-    return result;
+    if (!updatedUser) {
+      return null;
+    }
+
+    return new this.model(updatedUser);
   }
 };

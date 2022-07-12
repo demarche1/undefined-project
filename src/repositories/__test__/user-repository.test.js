@@ -13,7 +13,7 @@ describe("UserRepository.findByEmail", () => {
   });
 
   beforeEach(async () => {
-    await usersCollection.deleteMany();
+    await usersCollection.deleteMany({});
   });
 
   afterAll(async () => {
