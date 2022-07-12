@@ -13,4 +13,12 @@ module.exports = class Encryptor {
 
     return await bcrypt.compare(password, hash);
   }
+
+  async hash(password) {
+    if (!password) {
+      throw new MissingParamError("password");
+    }
+
+    return await bcrypt.hash(password, 10);
+  }
 };
