@@ -152,4 +152,75 @@ describe("UserService SUITE", () => {
       expect(result).toEqual(fakeUser);
     });
   });
+
+  describe("UserService UPDATE", () => {
+    test("should throws if name is not provided", async () => {
+      const { userService, fakeUser } = makeSut();
+      delete fakeUser.name;
+
+      expect(() => userService.create(fakeUser)).rejects.toThrow(
+        new MissingParamError("name")
+      );
+    });
+
+    test("should throws if email is not provided", async () => {
+      const { userService, fakeUser } = makeSut();
+      delete fakeUser.email;
+
+      expect(() => userService.create(fakeUser)).rejects.toThrow(
+        new MissingParamError("email")
+      );
+    });
+
+    test("should throws if age is not provided", async () => {
+      const { userService, fakeUser } = makeSut();
+      delete fakeUser.age;
+
+      expect(() => userService.create(fakeUser)).rejects.toThrow(
+        new MissingParamError("age")
+      );
+    });
+
+    test("should throws if city is not provided", async () => {
+      const { userService, fakeUser } = makeSut();
+      delete fakeUser.city;
+
+      expect(() => userService.create(fakeUser)).rejects.toThrow(
+        new MissingParamError("city")
+      );
+    });
+
+    test("should throws if zip_code is not provided", async () => {
+      const { userService, fakeUser } = makeSut();
+      delete fakeUser.zip_code;
+
+      expect(() => userService.create(fakeUser)).rejects.toThrow(
+        new MissingParamError("zip_code")
+      );
+    });
+
+    test("should ensure userRepository.updateUserInfo was called with correct params", async () => {
+      const { userService, fakeUser, userRepository } = makeSut();
+      const userRepositorySpy = jest.spyOn(userRepository, "updateUserInfo");
+      delete fakeUser.password;
+      await userService.update(fakeUser);
+      expect(userRepositorySpy).toHaveBeenCalledWith(fakeUser);
+    });
+
+    test("should return null if user not updated", async () => {
+      const { userService, fakeUser, userRepository } = makeSut();
+      userRepository.updateUserInfo.mockReturnValueOnce(Promise.resolve(null));
+      delete fakeUser.password;
+      const result = await userService.update(fakeUser);
+      expect(result).toBe(null);
+    });
+
+    test("should true if all is OK", async () => {
+      const { userService, fakeUser, userRepository } = makeSut();
+      userRepository.updateUserInfo.mockReturnValueOnce(Promise.resolve(true));
+      delete fakeUser.password;
+      const result = await userService.update(fakeUser);
+      expect(result).toBeTruthy();
+    });
+  });
 });
