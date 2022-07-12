@@ -46,7 +46,7 @@ module.exports = class UserController {
         );
       }
 
-      const userId = await this.userService.create({
+      const usertedId = await this.userService.create({
         name,
         age,
         email,
@@ -56,7 +56,7 @@ module.exports = class UserController {
         zip_code,
       });
 
-      return HttpResponse.Ok({ userId });
+      return HttpResponse.Ok({ usertedId });
     } catch (error) {
       return HttpResponse.InternalServerError();
     }
@@ -64,11 +64,62 @@ module.exports = class UserController {
 
   async show(httpResquest) {
     try {
-    } catch (error) {}
+      const { id } = httpResquest.params;
+
+      if (!id) {
+        return HttpResponse.BadRequest(new MissingParamError("id"));
+      }
+
+      const user = await this.userService.show(id);
+
+      if (!user) {
+        return HttpResponse.BadRequest(new InvalidParamError("id"));
+      }
+
+      return HttpResponse.Ok({ user });
+    } catch (error) {
+      return HttpResponse.InternalServerError();
+    }
   }
 
   async update(httpResquest) {
     try {
+      const { name, age, email, city, zip_code } = httpResquest.body;
+
+      if (!name) {
+        return HttpResponse.BadRequest(new MissingParamError("name"));
+      }
+
+      if (!age) {
+        return HttpResponse.BadRequest(new MissingParamError("age"));
+      }
+
+      if (!email) {
+        return HttpResponse.BadRequest(new MissingParamError("email"));
+      }
+
+      if (!city) {
+        return HttpResponse.BadRequest(new MissingParamError("city"));
+      }
+
+      if (!zip_code) {
+        return HttpResponse.BadRequest(new MissingParamError("zip_code"));
+      }
+      const user = await this.userService.update({
+        name,
+        age,
+        email,
+        city,
+        zip_code,
+      });
+
+      if (!user) {
+        return HttpResponse.BadRequest(
+          new InvalidParamError("Invalid params provided")
+        );
+      }
+
+      return HttpResponse.Ok({ message: "Success" });
     } catch (error) {}
   }
 };

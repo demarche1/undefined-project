@@ -33,7 +33,7 @@ module.exports = class UserService {
 
     const hashedPassword = await this.encryptor.hash(password);
 
-    const result = await this.userRepository.create({
+    const result = await this.userRepository.createUser({
       name,
       email,
       hashedPassword,
@@ -46,10 +46,56 @@ module.exports = class UserService {
       return null;
     }
 
-    return true;
+    return result;
   }
 
-  async show(id) {}
+  async show(id) {
+    if (!id) {
+      throw new MissingParamError("id");
+    }
 
-  async update(id) {}
+    const user = await this.userRepository.findById(id);
+
+    if (!user) {
+      return null;
+    }
+
+    return user;
+  }
+
+  async update({ name, age, email, city, zip_code }) {
+    if (!name) {
+      throw new MissingParamError("name");
+    }
+
+    if (!age) {
+      throw new MissingParamError("age");
+    }
+
+    if (!email) {
+      throw new MissingParamError("email");
+    }
+
+    if (!city) {
+      throw new MissingParamError("city");
+    }
+
+    if (!zip_code) {
+      throw new MissingParamError("zip_code");
+    }
+
+    const result = await this.userRepository.updateUserInfo({
+      name,
+      age,
+      email,
+      city,
+      zip_code,
+    });
+
+    if (!result) {
+      return null;
+    }
+
+    return true;
+  }
 };

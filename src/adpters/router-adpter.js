@@ -1,8 +1,10 @@
 module.exports = class RouterAdpter {
-  adapt(controller, method) {
+  static adapt(controller, method) {
     return async (req, res) => {
       const httpResquest = {
         body: req.body,
+        headers: req.headers,
+        params: req.params,
       };
       const httpResponse = await controller[method](httpResquest);
 

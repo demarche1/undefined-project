@@ -1,5 +1,6 @@
 const { MissingParamError, InvalidParamError } = require("../helpers/errors");
 const MongoHelper = require("../helpers/mongo-helper");
+const { ObjectId } = require("mongodb");
 
 module.exports = class UserRepository {
   constructor(model) {
@@ -25,16 +26,19 @@ module.exports = class UserRepository {
     return user;
   }
 
-  async findById(id) {
-    if (!id) {
+  async findById(_id) {
+    if (!_id) {
       throw new MissingParamError("id");
     }
 
     const usersCollection = await MongoHelper.getCollection("users");
     const userFromDb = await usersCollection.findOne(
-      { id },
+      { _id: new ObjectId(_id) },
       { projection: { email: 1, password: 1, age: 1, city: 1, zip_code: 1 } }
     );
+
+    console.log("userFromDb", userFromDb);
+    console.log("id", _id);
 
     if (!userFromDb) {
       return null;
@@ -45,13 +49,23 @@ module.exports = class UserRepository {
     return user;
   }
 
-  async create(user) {
+  async createUser(user) {
     if (!user) {
       throw InvalidParamError("user");
     }
 
     const usersCollection = await MongoHelper.getCollection("users");
-    const result = await usersCollection.insertOne(user);
+    const { insertedId } = await usersCollection.insertOne(user);
+
+    return insertedId.toHexString();
+  }
+
+  async updateUserInfo(user) {
+    const usersCollection = await MongoHelper.getCollection("users");
+    const result = await usersCollection.findOneAndUpdate(
+      { name: user.name },
+      { $set: user }
+    );
 
     return result;
   }
