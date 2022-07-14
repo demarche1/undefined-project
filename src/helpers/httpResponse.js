@@ -29,4 +29,20 @@ module.exports = class HttpResponse {
       body: data,
     };
   }
+
+  static HandleError(error) {
+    switch (error.name) {
+      case "MissingParamError":
+        return HttpResponse.BadRequest(error);
+
+      case "InvalidParamError":
+        return HttpResponse.BadRequest(error);
+
+      case "UnauthorizedError":
+        return HttpResponse.Unauthorized();
+
+      default:
+        return HttpResponse.InternalServerError();
+    }
+  }
 };

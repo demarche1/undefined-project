@@ -11,28 +11,6 @@ module.exports = class UserController {
       const { name, age, email, password, confirmPassword, city, zip_code } =
         httpResquest.body;
 
-      const validator = new Validator();
-
-      const errors = validator
-        .isAllParamsProvided()
-        .equalsTo("password", "confirmPassword")
-        .email()
-        .validate({
-          name,
-          age,
-          email,
-          password,
-          confirmPassword,
-          city,
-          zip_code,
-        });
-
-      if (errors.length > 0) {
-        for (const error of errors) {
-          return HttpResponse.BadRequest(error);
-        }
-      }
-
       const usertedId = await this.userService.create({
         name,
         age,
@@ -45,47 +23,28 @@ module.exports = class UserController {
 
       return HttpResponse.Ok({ usertedId });
     } catch (error) {
-      return HttpResponse.InternalServerError();
+      return HttpResponse.HandleError(error);
     }
   }
 
   async show(httpResquest) {
     try {
-      const validator = new Validator();
-
       const { id } = httpResquest.params;
-
-      const errors = validator.required().string().validate({ id });
-
-      if (errors.length > 0) {
-        for (const error of errors) {
-          return HttpResponse.BadRequest(error);
-        }
-      }
-
       const user = await this.userService.show(id);
-
-      if (!user) {
-        return HttpResponse.BadRequest(new InvalidParamError("id"));
-      }
 
       return HttpResponse.Ok({ user });
     } catch (error) {
-      return HttpResponse.InternalServerError();
+      return HttpResponse.HandleError(error);
     }
   }
 
   async update(httpResquest) {
     try {
       const { name, age, email, city, zip_code } = httpResquest.body;
-      const validator = new Validator();
+      const { id } = httpResquest.params;
 
-      const errros = validator
-        .isAllParamsProvided()
-        .email()
-        .validate({ name, age, email, city, zip_code });
-
-      const user = await this.userService.update({
+      await this.userService.update({
+        id,
         name,
         age,
         email,
@@ -93,15 +52,9 @@ module.exports = class UserController {
         zip_code,
       });
 
-      if (!user) {
-        return HttpResponse.BadRequest(
-          new InvalidParamError("Invalid params provided")
-        );
-      }
-
       return HttpResponse.Ok({ message: "Success" });
     } catch (error) {
-      return HttpResponse.InternalServerError();
+      return HttpResponse.HandleError(error);
     }
   }
 };

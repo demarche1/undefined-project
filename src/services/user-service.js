@@ -63,7 +63,7 @@ module.exports = class UserService {
     return user;
   }
 
-  async update({ name, age, email, city, zip_code }) {
+  async update({ id, name, age, email, city, zip_code }) {
     if (!name) {
       throw new MissingParamError("name");
     }
@@ -85,6 +85,7 @@ module.exports = class UserService {
     }
 
     const result = await this.userRepository.updateUserInfo({
+      id,
       name,
       age,
       email,

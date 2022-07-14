@@ -31,7 +31,7 @@ module.exports = class Validator {
     return this;
   }
 
-  email() {
+  mustContainsValidEmail() {
     this.validators.push((value) => {
       if (
         !/^[a-z|A-Z|0-9|!#$%&'*+\-\/=?^_`{|}~]+@[a-z]+\.[a-z]{2,3}$/.test(
@@ -47,7 +47,7 @@ module.exports = class Validator {
 
   required() {
     this.validators.push((value) => {
-      const key = Object.keys(value)[0];
+      const [key] = Object.keys(value);
       if (!value[key]) {
         this.errors.push(new MissingParamError(key));
       }

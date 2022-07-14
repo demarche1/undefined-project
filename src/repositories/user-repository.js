@@ -14,7 +14,16 @@ module.exports = class UserRepository {
     const usersCollection = await MongoHelper.getCollection("users");
     const userFromDb = await usersCollection.findOne(
       { email },
-      { projection: { email: 1, password: 1, age: 1, city: 1, zip_code: 1 } }
+      {
+        projection: {
+          name: 1,
+          email: 1,
+          password: 1,
+          age: 1,
+          city: 1,
+          zip_code: 1,
+        },
+      }
     );
 
     if (!userFromDb) {
@@ -34,7 +43,16 @@ module.exports = class UserRepository {
     const usersCollection = await MongoHelper.getCollection("users");
     const userFromDb = await usersCollection.findOne(
       { _id: new ObjectId(_id) },
-      { projection: { email: 1, password: 1, age: 1, city: 1, zip_code: 1 } }
+      {
+        projection: {
+          name: 1,
+          email: 1,
+          password: 1,
+          age: 1,
+          city: 1,
+          zip_code: 1,
+        },
+      }
     );
 
     if (!userFromDb) {
@@ -58,9 +76,9 @@ module.exports = class UserRepository {
   }
 
   async updateUserInfo(user) {
-    const usersCollection = await MongoHelper.getCollection("users");
+    const usersCollection = await MongoHelper.getCollectionm("users");
     const updatedUser = await usersCollection.findOneAndUpdate(
-      { name: user.name },
+      { _id: new ObjectId(user.id) },
       { $set: user }
     );
 
@@ -68,6 +86,6 @@ module.exports = class UserRepository {
       return null;
     }
 
-    return new this.model(updatedUser);
+    return new this.model(updatedUser.value);
   }
 };
