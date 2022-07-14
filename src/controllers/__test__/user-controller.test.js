@@ -30,7 +30,7 @@ function makeSut() {
   const fakeUser = {
     id: "any_id",
     name: "any_name",
-    email: "any_email@email",
+    email: "anyemail@email",
     password: "any_password",
     age: "any_age",
     city: "any_city",
@@ -108,7 +108,7 @@ describe("UserController SUITE", () => {
       const { httpResquest, userController } = makeSut();
       httpResquest.body.confirmPassword = "other_any_password";
       const result = await userController.create(httpResquest);
-      expect(result.body).toEqual(new InvalidParamError("confirmPassword"));
+      expect(result.body).toEqual(new InvalidParamError("password"));
       expect(result.status).toBe(400);
     });
 

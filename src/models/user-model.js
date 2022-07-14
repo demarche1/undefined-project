@@ -6,6 +6,7 @@ module.exports = class UserModel {
   city;
   zip_code;
   password;
+
   constructor(userInfo) {
     Object.assign(this, userInfo);
     this.updateID(userInfo);

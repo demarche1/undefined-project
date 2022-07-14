@@ -1,5 +1,6 @@
 const HttpResponse = require("../helpers/httpResponse");
-const { MissingParamError, InvalidParamError } = require("../helpers/errors");
+const { InvalidParamError } = require("../helpers/errors");
+const Validator = require("../helpers/validator");
 
 module.exports = class UserController {
   constructor(userService) {
@@ -10,40 +11,26 @@ module.exports = class UserController {
       const { name, age, email, password, confirmPassword, city, zip_code } =
         httpResquest.body;
 
-      if (!name) {
-        return HttpResponse.BadRequest(new MissingParamError("name"));
-      }
+      const validator = new Validator();
 
-      if (!age) {
-        return HttpResponse.BadRequest(new MissingParamError("age"));
-      }
+      const errors = validator
+        .isAllParamsProvided()
+        .equalsTo("password", "confirmPassword")
+        .email()
+        .validate({
+          name,
+          age,
+          email,
+          password,
+          confirmPassword,
+          city,
+          zip_code,
+        });
 
-      if (!email) {
-        return HttpResponse.BadRequest(new MissingParamError("email"));
-      }
-
-      if (!password) {
-        return HttpResponse.BadRequest(new MissingParamError("password"));
-      }
-
-      if (!confirmPassword) {
-        return HttpResponse.BadRequest(
-          new MissingParamError("confirmPassword")
-        );
-      }
-
-      if (!city) {
-        return HttpResponse.BadRequest(new MissingParamError("city"));
-      }
-
-      if (!zip_code) {
-        return HttpResponse.BadRequest(new MissingParamError("zip_code"));
-      }
-
-      if (password !== confirmPassword) {
-        return HttpResponse.BadRequest(
-          new InvalidParamError("confirmPassword")
-        );
+      if (errors.length > 0) {
+        for (const error of errors) {
+          return HttpResponse.BadRequest(error);
+        }
       }
 
       const usertedId = await this.userService.create({
@@ -64,10 +51,16 @@ module.exports = class UserController {
 
   async show(httpResquest) {
     try {
+      const validator = new Validator();
+
       const { id } = httpResquest.params;
 
-      if (!id) {
-        return HttpResponse.BadRequest(new MissingParamError("id"));
+      const errors = validator.required().string().validate({ id });
+
+      if (errors.length > 0) {
+        for (const error of errors) {
+          return HttpResponse.BadRequest(error);
+        }
       }
 
       const user = await this.userService.show(id);
@@ -85,26 +78,13 @@ module.exports = class UserController {
   async update(httpResquest) {
     try {
       const { name, age, email, city, zip_code } = httpResquest.body;
+      const validator = new Validator();
 
-      if (!name) {
-        return HttpResponse.BadRequest(new MissingParamError("name"));
-      }
+      const errros = validator
+        .isAllParamsProvided()
+        .email()
+        .validate({ name, age, email, city, zip_code });
 
-      if (!age) {
-        return HttpResponse.BadRequest(new MissingParamError("age"));
-      }
-
-      if (!email) {
-        return HttpResponse.BadRequest(new MissingParamError("email"));
-      }
-
-      if (!city) {
-        return HttpResponse.BadRequest(new MissingParamError("city"));
-      }
-
-      if (!zip_code) {
-        return HttpResponse.BadRequest(new MissingParamError("zip_code"));
-      }
       const user = await this.userService.update({
         name,
         age,
@@ -120,6 +100,8 @@ module.exports = class UserController {
       }
 
       return HttpResponse.Ok({ message: "Success" });
-    } catch (error) {}
+    } catch (error) {
+      return HttpResponse.InternalServerError();
+    }
   }
 };
