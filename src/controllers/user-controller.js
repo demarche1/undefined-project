@@ -1,6 +1,4 @@
 const HttpResponse = require("../helpers/httpResponse");
-const { InvalidParamError } = require("../helpers/errors");
-const Validator = require("../helpers/validator");
 
 module.exports = class UserController {
   constructor(userService) {

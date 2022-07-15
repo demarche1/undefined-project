@@ -18,4 +18,9 @@ module.exports = class TokenGenerator {
 
     return token;
   }
+
+  async verifyToken(token) {
+    const { decoded } = await jwt.verify(token, this.secret);
+    return decoded;
+  }
 };

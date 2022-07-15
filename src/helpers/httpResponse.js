@@ -9,6 +9,13 @@ module.exports = class HttpResponse {
     };
   }
 
+  static Forbbiden() {
+    return {
+      status: 403,
+      body: new ServerError(),
+    };
+  }
+
   static InternalServerError() {
     return {
       status: 500,
