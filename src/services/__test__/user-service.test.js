@@ -20,6 +20,7 @@ function makeSut() {
     name: "any_name",
     email: "any_email@email.com",
     password: "any_password",
+    confirmPassword: "any_password",
     age: 50,
     city: "any_city",
     zip_code: "any_zip_code",
@@ -54,6 +55,15 @@ describe("UserService SUITE", () => {
 
       expect(() => userService.create(fakeUser)).rejects.toThrow(
         new MissingParamError("password")
+      );
+    });
+
+    test("should throws if confirmPassword is not provided", async () => {
+      const { userService, fakeUser } = makeSut();
+      delete fakeUser.confirmPassword;
+
+      expect(() => userService.create(fakeUser)).rejects.toThrow(
+        new MissingParamError("confirmPassword")
       );
     });
 
@@ -203,6 +213,7 @@ describe("UserService SUITE", () => {
       const { userService, fakeUser, userRepository } = makeSut();
       const userRepositorySpy = jest.spyOn(userRepository, "updateUserInfo");
       delete fakeUser.password;
+      delete fakeUser.confirmPassword;
       await userService.update(fakeUser);
       expect(userRepositorySpy).toHaveBeenCalledWith(fakeUser);
     });

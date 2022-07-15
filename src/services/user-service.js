@@ -1,4 +1,5 @@
-const { MissingParamError } = require("../helpers/errors");
+const { MissingParamError, ErrorDispatcher } = require("../helpers/errors");
+const UserValidador = require("../helpers/validators/user-validador");
 
 module.exports = class UserService {
   constructor(userRepository, encryptor) {
@@ -6,33 +7,33 @@ module.exports = class UserService {
     this.encryptor = encryptor;
   }
 
-  async create({ name, email, password, age, city, zip_code }) {
-    if (!name) {
-      throw new MissingParamError("name");
-    }
+  async create({
+    name,
+    email,
+    password,
+    confirmPassword,
+    age,
+    city,
+    zip_code,
+  }) {
+    const userValidador = new UserValidador();
+    const erros = userValidador
+      .ensureAllParamsProvided()
+      .ensurePasswordEqualsTo("confirmPassword")
+      .ensureIsValidEmail()
+      .validate({
+        name,
+        email,
+        password,
+        confirmPassword,
+        age,
+        city,
+        zip_code,
+      });
 
-    if (!email) {
-      throw new MissingParamError("email");
-    }
-
-    if (!password) {
-      throw new MissingParamError("password");
-    }
-
-    if (!age) {
-      throw new MissingParamError("age");
-    }
-
-    if (!city) {
-      throw new MissingParamError("city");
-    }
-
-    if (!zip_code) {
-      throw new MissingParamError("zip_code");
-    }
+    ErrorDispatcher.dispatch(erros);
 
     const hashedPassword = await this.encryptor.hash(password);
-
     const result = await this.userRepository.createUser({
       name,
       email,
