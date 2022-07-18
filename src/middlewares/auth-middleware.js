@@ -7,16 +7,18 @@ module.exports = class AuthMiddleware {
   async auth(httpRequest) {
     const token = httpRequest.headers["x-access-token"];
     if (!token) {
-      return HttpResponse.Unauthorized();
+      return [HttpResponse.Unauthorized(), null];
     }
     try {
       const decoded = await this.tokenGenerator.verifyToken(token);
 
       if (!decoded) {
-        return HttpResponse.Unauthorized();
+        return [HttpResponse.Unauthorized(), null];
       }
+
+      return [null, decoded];
     } catch (error) {
-      return HttpResponse.Forbbiden();
+      return [HttpResponse.Forbbiden(), null];
     }
   }
 };

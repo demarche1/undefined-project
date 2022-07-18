@@ -28,7 +28,8 @@ module.exports = class UserController {
   async show(httpResquest) {
     try {
       const { id } = httpResquest.params;
-      const user = await this.userService.show(id);
+      const authUser = httpResquest.authenticatedUser;
+      const user = await this.userService.show(id, authUser);
 
       return HttpResponse.Ok({ user });
     } catch (error) {

@@ -5,7 +5,11 @@ module.exports = class RouterAdpter {
         body: req.body,
         headers: req.headers,
         params: req.params,
+        authenticatedUser: {
+          id: req.auth,
+        },
       };
+
       const httpResponse = await controller[method](httpResquest);
 
       return res.status(httpResponse.status).json(httpResponse.body);

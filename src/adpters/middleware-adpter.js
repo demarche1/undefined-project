@@ -1,14 +1,15 @@
-module.exports = class RouterAdpter {
-  static adapt(middleware) {
+module.exports = class MiddlewareAdpter {
+  static adapt(middleware, method) {
     return async (req, res, next) => {
       const httpResquest = {
         body: req.body,
         headers: req.headers,
         params: req.params,
       };
-      const httpResponse = await middleware.auth(httpResquest);
+      const [httpResponse, decoded] = await middleware[method](httpResquest);
 
-      if (!httpResponse) {
+      if (decoded) {
+        req.auth = decoded;
         return next();
       }
 

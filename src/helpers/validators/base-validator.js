@@ -1,6 +1,6 @@
 const { InvalidParamError, MissingParamError } = require("../errors");
 
-module.exports = class BaseValidador {
+module.exports = class BaseValidator {
   validators = [];
   errors = [];
 

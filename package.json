@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./src/index.js",
+    "start": "npx nodemon ./src/index.js",
     "test": "jest --colors --noStackTrace --passWithNoTests --runInBand",
     "test:unit": "npm test -- --watch -c jest-unit-config.js",
     "test:cov": "jest --coverage"
@@ -23,6 +23,7 @@
     "express": "^4.18.1",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.7.0",
+    "nodemon": "^1.4.1",
     "zod": "^3.17.3"
   }
 }

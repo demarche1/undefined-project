@@ -18,7 +18,7 @@ module.exports = class UserRepository {
         projection: {
           name: 1,
           email: 1,
-          password: 1,
+          hashedPassword: 1,
           age: 1,
           city: 1,
           zip_code: 1,
@@ -47,7 +47,7 @@ module.exports = class UserRepository {
         projection: {
           name: 1,
           email: 1,
-          password: 1,
+          hashedPassword: 1,
           age: 1,
           city: 1,
           zip_code: 1,

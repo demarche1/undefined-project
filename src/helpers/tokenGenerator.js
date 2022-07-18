@@ -20,7 +20,8 @@ module.exports = class TokenGenerator {
   }
 
   async verifyToken(token) {
-    const { decoded } = await jwt.verify(token, this.secret);
-    return decoded;
+    const { id } = await jwt.verify(token, this.secret);
+
+    return id;
   }
 };

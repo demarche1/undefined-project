@@ -1,7 +1,7 @@
 const { InvalidParamError } = require("../errors");
-const BaseValidador = require("./base-validador");
+const BaseValidator = require("./base-validator");
 
-module.exports = class UserValidador extends BaseValidador {
+module.exports = class UserValidator extends BaseValidator {
   constructor() {
     super();
   }

@@ -13,12 +13,12 @@ router.post("/user", RouterAdpter.adapt(userController, "create"));
 
 router.get(
   "/user/:id",
-  // MiddlewareAdpter.adapt(authMiddleware),
+  MiddlewareAdpter.adapt(authMiddleware, "auth"),
   RouterAdpter.adapt(userController, "show")
 );
 router.put(
   "/user/:id",
-  MiddlewareAdpter.adapt(authMiddleware),
+  MiddlewareAdpter.adapt(authMiddleware, "auth"),
   RouterAdpter.adapt(userController, "update")
 );
 
