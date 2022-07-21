@@ -38,6 +38,7 @@ module.exports = class HttpResponse {
   }
 
   static HandleError(error) {
+    console.log(error);
     switch (error.name) {
       case "MissingParamError":
         return HttpResponse.BadRequest(error);
@@ -47,6 +48,9 @@ module.exports = class HttpResponse {
 
       case "UnauthorizedError":
         return HttpResponse.Unauthorized();
+
+      case "RegistredError":
+        return HttpResponse.Ok({ message: error.message });
 
       default:
         return HttpResponse.InternalServerError();

@@ -19,7 +19,7 @@ module.exports = class AuthService {
     const user = await this.userRepository.findByEmail(email);
 
     const isValid =
-      user && (await this.encryptor.compare(password, user.hashedPassword));
+      user && (await this.encryptor.compare(password, user.password));
 
     if (!isValid) {
       return null;

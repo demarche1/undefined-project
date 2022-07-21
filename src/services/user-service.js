@@ -2,50 +2,49 @@ const {
   MissingParamError,
   ErrorDispatcher,
   UnauthorizedError,
+  RegistredError,
 } = require("../helpers/errors");
-const UserValidator = require("../helpers/validators/user-validator");
 
 module.exports = class UserService {
-  constructor(userRepository, encryptor) {
+  constructor(userRepository, encryptor, userValidador) {
     this.userRepository = userRepository;
     this.encryptor = encryptor;
+    this.userValidador = userValidador;
   }
 
-  async create({
-    name,
-    email,
-    password,
-    confirmPassword,
-    age,
-    city,
-    zip_code,
-  }) {
-    const userValidador = new UserValidator();
+  async create(userParams) {
+    const userValidador = new this.userValidador();
     const errors = userValidador
-      .ensureAllParamsProvided()
+      .ensureAllParamsProvided([
+        "name",
+        "email",
+        "password",
+        "confirmPassword",
+        "age",
+        "city",
+        "zip_code",
+      ])
       .ensurePasswordEqualsTo("confirmPassword")
       .ensureIsValidEmail()
-      .validate({
-        name,
-        email,
-        password,
-        confirmPassword,
-        age,
-        city,
-        zip_code,
-      });
+      .validate(userParams);
 
-    ErrorDispatcher.dispatch(errors);
+    if (errors && errors.length > 0) {
+      ErrorDispatcher.dispatch(errors);
+    }
 
-    const hashedPassword = await this.encryptor.hash(password);
-    const result = await this.userRepository.createUser({
-      name,
-      email,
-      hashedPassword,
-      age,
-      city,
-      zip_code,
-    });
+    const hasEmailRegistred = await this.userRepository.findByEmail(
+      userParams.email
+    );
+
+    if (hasEmailRegistred) {
+      throw new RegistredError("email");
+    }
+
+    const hashPassword = await this.encryptor.hash(userParams.password);
+    userParams.password = hashPassword;
+    Reflect.deleteProperty(userParams, "confirmPassword");
+
+    const result = await this.userRepository.createUser(userParams);
 
     if (!result) {
       return null;
@@ -72,35 +71,25 @@ module.exports = class UserService {
     return user;
   }
 
-  async update({ id, name, age, email, city, zip_code }) {
-    if (!name) {
-      throw new MissingParamError("name");
+  async update(userParams) {
+    const userValidador = new this.userValidador();
+    const errors = userValidador
+      .ensureAllParamsProvided([
+        "id",
+        "name",
+        "email",
+        "age",
+        "city",
+        "zip_code",
+      ])
+      .ensureIsValidEmail()
+      .validate(userParams);
+
+    if (errors && errors.length > 0) {
+      ErrorDispatcher.dispatch(errors);
     }
 
-    if (!age) {
-      throw new MissingParamError("age");
-    }
-
-    if (!email) {
-      throw new MissingParamError("email");
-    }
-
-    if (!city) {
-      throw new MissingParamError("city");
-    }
-
-    if (!zip_code) {
-      throw new MissingParamError("zip_code");
-    }
-
-    const result = await this.userRepository.updateUserInfo({
-      id,
-      name,
-      age,
-      email,
-      city,
-      zip_code,
-    });
+    const result = await this.userRepository.updateUserInfo(userParams);
 
     if (!result) {
       return null;

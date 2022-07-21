@@ -3,22 +3,21 @@ const MongoHelper = require("../helpers/mongo-helper");
 const { ObjectId } = require("mongodb");
 
 module.exports = class UserRepository {
-  constructor(model) {
-    this.model = model;
-  }
+  constructor() {}
+
   async findByEmail(email) {
     if (!email) {
       throw new MissingParamError("email");
     }
 
     const usersCollection = await MongoHelper.getCollection("users");
-    const userFromDb = await usersCollection.findOne(
+    const user = await usersCollection.findOne(
       { email },
       {
         projection: {
           name: 1,
           email: 1,
-          hashedPassword: 1,
+          password: 1,
           age: 1,
           city: 1,
           zip_code: 1,
@@ -26,11 +25,12 @@ module.exports = class UserRepository {
       }
     );
 
-    if (!userFromDb) {
+    if (!user) {
       return null;
     }
 
-    const user = new this.model(userFromDb);
+    user.id = user._id.toHexString();
+    Reflect.deleteProperty(user, "_id");
 
     return user;
   }
@@ -41,7 +41,7 @@ module.exports = class UserRepository {
     }
 
     const usersCollection = await MongoHelper.getCollection("users");
-    const userFromDb = await usersCollection.findOne(
+    const user = await usersCollection.findOne(
       { _id: new ObjectId(_id) },
       {
         projection: {
@@ -55,11 +55,12 @@ module.exports = class UserRepository {
       }
     );
 
-    if (!userFromDb) {
+    if (!user) {
       return null;
     }
 
-    const user = new this.model(userFromDb);
+    user.id = user._id.toHexString();
+    Reflect.deleteProperty(user, "_id");
 
     return user;
   }
@@ -76,7 +77,8 @@ module.exports = class UserRepository {
   }
 
   async updateUserInfo(user) {
-    const usersCollection = await MongoHelper.getCollectionm("users");
+    const usersCollection = await MongoHelper.getCollection("users");
+
     const updatedUser = await usersCollection.findOneAndUpdate(
       { _id: new ObjectId(user.id) },
       { $set: user }
@@ -86,6 +88,8 @@ module.exports = class UserRepository {
       return null;
     }
 
-    return new this.model(updatedUser.value);
+    Reflect.deleteProperty(updatedUser.value, "_id");
+
+    return updatedUser.value;
   }
 };
